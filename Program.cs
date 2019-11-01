@@ -16,34 +16,30 @@ namespace HauntedHouse {
                 Console.WriteLine ($"-----------Hero {x} Selection!-----------");
                 Heroes.Add (ChooseHero ());
             }
-            //List<Enemy> Enemies = new List<Enemy> (); //enemies list declaration
-
 
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write ($"You, ");
-            // for(var x=0; x<Heroes.Count;x++){
-            // if Heroes[x] == 1{
-
-            // }
-            foreach (Hero hero in Heroes) {
-                Console.Write ($" {hero._Name} ");
+            for(var x=0; x<Heroes.Count;x++){
+                Console.Write ($" {Heroes[x]._Name}, ");
+                if (x == Heroes.Count-2){
+                    Console.Write(" and ");
+                }
             }
-            Console.WriteLine (", have been summoned to Dojo Manor by Count Brakula,\nwho is not a vampire, to exterminate the spooky entities that dwell inside.\nYou are supicious of Count Brakula, but accept the job anyway.\nPress Enter/Return to begin...");
+            Console.WriteLine (" have been summoned to Dojo Manor by Count Brakula,\nwho is not a vampire, to exterminate the spooky entities that dwell inside.\nYou are supicious of Count Brakula, but accept the job anyway.\nPress Enter/Return to begin...");
             Console.ResetColor ();
 
             ConsoleKey key = Console.ReadKey (true).Key;
             while (key != ConsoleKey.Enter) {
                 key = Console.ReadKey (true).Key;
             }
-            //Console.WriteLine("BEGIN YOUR ADVENTURE HERE!!!");
             bool room_advance = true;
             bool end = false;
             int room_selection;
             Room current_room = rooms[rooms.Count - 1]; //first room
             List<Room> possible_rooms = new List<Room>();
-            List<Enemy> Enemies = current_room._Enemies; //first room only
+            List<Enemy> Enemies = current_room._Enemies; //Populated for the first room only
 
-            while (!end) {
+            while (!end) { //Main loop starts here
                 if (room_advance == true){
                     if(Enemies.Count >= 1){
                         Console.WriteLine ($"You have entered {current_room._Name}");
@@ -52,36 +48,50 @@ namespace HauntedHouse {
                 room_advance = false;
                 ///CHANGE ROOMS HERE!!!!
                 }else{ //battle logic
-                    Enemies = current_room._Enemies;
-
+                    
                     if (Enemies.Count > 0) { //are there enemies???
+                        Console.WriteLine("---------------------------------------------"); //begin battle turn
                         Console.WriteLine ($"There are {Enemies.Count} enemies in the room!");
-                    foreach (Hero hero in Heroes) { //attack loop
-                        hero.Attack (Enemies[rand.Next (0, Enemies.Count)]);
+                        foreach(Enemy enemy in Enemies){
+                            Console.WriteLine($"A {enemy._Name} with {enemy.health} Health!");
+                        }
+                        foreach (Hero hero in Heroes) { //attack loop
+                            hero.Attack (Enemies[rand.Next (0, Enemies.Count)]);
                         }
 
-                    foreach (Enemy enemy in Enemies) {
-                        enemy.Attack (Heroes[rand.Next (0, Heroes.Count)]);
+                        foreach (Enemy enemy in Enemies) {
+                            enemy.Attack (Heroes[rand.Next (0, Heroes.Count)]);
                         }
                         check_dead_enemies(Enemies);
                         check_dead_heroes(Heroes);
+                        Console.WriteLine("---------------------------------------------"); //end battle turn
                     } else { //you can advance!!
                         Console.WriteLine ($"There are no enemies in the room.");
+                        foreach(Hero hero in Heroes){
+                            Console.WriteLine($"{hero._Name} is left standing with {hero.health} health left");
+                        }
                         Console.WriteLine ("---------------------------------------------");
-                        for(var x =0; x< current_room._ForwardPaths.Count ;x++){ 
-                            Console.Write ($"Type {x+1} to advance to room {current_room._ForwardPaths[x]._Name} "); //decide room
+                        if(current_room == rooms[0]){ //check win condition. First room in list the last room in the game.
+                            Console.WriteLine($"---------Your Party Escaped with their lives!!!!!!!----------");
+                            Console.WriteLine ("The End!");
+                            end = true; //that's all folks.
+                        }else{ //continue game.
+                            for(var x =0; x< current_room._ForwardPaths.Count ;x++){ 
+                                Console.Write ($"Type {x+1} to advance to room {current_room._ForwardPaths[x]._Name} "); //decide room
+                            }
+                            Console.WriteLine();
+                            while (!int.TryParse (Console.ReadLine (), out room_selection)) {
+                                Console.WriteLine ("Please enter an above integer.");
+                            }
+                            if(room_selection >= 0 && room_selection < current_room._ForwardPaths.Count ){
+                                current_room = current_room._ForwardPaths[room_selection];
+                                Enemies = current_room._Enemies;
+                            }else{
+                                current_room = current_room._ForwardPaths[0];
+                                Enemies = current_room._Enemies;    
+                            }
+                            room_advance = true;
                         }
-                        Console.WriteLine();
-                        while (!int.TryParse (Console.ReadLine (), out room_selection)) {
-                            Console.WriteLine ("Please enter an above integer.");
-                        }
-                        if(room_selection >= 0 && room_selection < current_room._ForwardPaths.Count ){
-                            current_room = current_room._ForwardPaths[room_selection];
-                        }else{
-                            current_room = current_room._ForwardPaths[0];    
-                        }
-
-                        room_advance = true;
                     }
 
                     // Heroes = new List<Hero> (); //TESTING!!!!!!!!!!!!
@@ -99,13 +109,11 @@ namespace HauntedHouse {
             }
         }
         public static List<Hero> check_dead_heroes(List<Hero> Heroes) {
-            //foreach(Hero hero in Heroes){
-            //}
             
             for (int x = 0; x < Heroes.Count; x++) {
                 Console.WriteLine($"{Heroes[x]._Name} Has {Heroes[x].health} health left!");
                 if(Heroes[x].CheckDead() == true){
-                    Console.WriteLine(Heroes[x]._Name); 
+                    Console.WriteLine($"Our hero {Heroes[x]._Name} has fallen!"); 
                     Heroes.RemoveAt(x);
                 }
             }
@@ -134,23 +142,19 @@ namespace HauntedHouse {
             Console.WriteLine ("What is your character's name?");
             string name = Console.ReadLine();
             if (choice == 1) {
-                //CREATE ATTACK HERO
                 Archer archer = new Archer (name);
                 return archer;
             }
             if (choice == 2) {
-                //CREATE ATTACK HERO
                 Knight knight = new Knight (name);
                 return knight;
             }
             if (choice == 3) {
-                //CREATE ATTACK HERO
                 Wizard wizard = new Wizard (name);
                 return wizard;
             } else {
                 return new Wizard ("Jeff");
             }
         }
-
     }
 }
