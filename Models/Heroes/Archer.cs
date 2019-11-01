@@ -12,7 +12,7 @@ namespace HauntedHouse.Models
             //12
             _Attack = 10;
             _Defense = 2;
-            _Health = 100;
+            _Health = 3;
             _Hat = "Headband Of Courage";
         }
         //Properties
