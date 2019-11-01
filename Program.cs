@@ -26,6 +26,7 @@ namespace HauntedHouse {
                 }
             }
             Console.WriteLine (" have been summoned to Dojo Manor by Count Brakula,\nwho is not a vampire, to exterminate the spooky entities that dwell inside.\nYou are supicious of Count Brakula, but accept the job anyway.\nPress Enter/Return to begin...");
+            Console.WriteLine("---------------------------------------------");
             Console.ResetColor ();
 
             ConsoleKey key = Console.ReadKey (true).Key;
@@ -42,8 +43,10 @@ namespace HauntedHouse {
             while (!end) { //Main loop starts here
                 if (room_advance == true){
                     if(Enemies.Count >= 1){
+                        Console.ForegroundColor = ConsoleColor.Magenta;
                         Console.WriteLine ($"You have entered {current_room._Name}");
                         Console.WriteLine($"{current_room._Description}");
+                        Console.ResetColor ();
                     }
                 room_advance = false;
                 ///CHANGE ROOMS HERE!!!!
@@ -51,24 +54,34 @@ namespace HauntedHouse {
                     
                     if (Enemies.Count > 0) { //are there enemies???
                         Console.WriteLine("---------------------------------------------"); //begin battle turn
+                        Console.ForegroundColor = ConsoleColor.Gray;
                         Console.WriteLine ($"There are {Enemies.Count} enemies in the room!");
                         foreach(Enemy enemy in Enemies){
                             Console.WriteLine($"A {enemy._Name} with {enemy.health} Health!");
                         }
+                        Console.ResetColor ();
+                        Console.ForegroundColor = ConsoleColor.Green;
                         foreach (Hero hero in Heroes) { //attack loop
                             hero.Attack (Enemies[rand.Next (0, Enemies.Count)]);
                         }
-
+                        Console.ResetColor ();
+                        Console.ForegroundColor = ConsoleColor.Red;
                         foreach (Enemy enemy in Enemies) {
                             enemy.Attack (Heroes[rand.Next (0, Heroes.Count)]);
                         }
+                        Console.ResetColor ();
                         check_dead_enemies(Enemies);
                         check_dead_heroes(Heroes);
                         Console.WriteLine("---------------------------------------------"); //end battle turn
                     } else { //you can advance!!
-                        Console.WriteLine ($"There are no enemies in the room.");
+                        Console.ForegroundColor=ConsoleColor.Cyan;
+                        Console.WriteLine ($"     There are no enemies in the room.");
+                        System.Console.WriteLine("         .................");
+                        Console.ResetColor();
                         foreach(Hero hero in Heroes){
-                            Console.WriteLine($"{hero._Name} is left standing with {hero.health} health left");
+                        Console.ForegroundColor=ConsoleColor.Cyan;
+                            Console.WriteLine($"--{hero._Name} is left standing with {hero.health} health left");
+                            Console.ResetColor();
                         }
                         Console.WriteLine ("---------------------------------------------");
                         if(current_room == rooms[0]){ //check win condition. First room in list the last room in the game.
@@ -77,11 +90,14 @@ namespace HauntedHouse {
                             end = true; //that's all folks.
                         }else{ //continue game.
                             for(var x =0; x< current_room._ForwardPaths.Count ;x++){ 
+                                Console.ForegroundColor=ConsoleColor.Yellow;
                                 Console.Write ($"Type {x+1} to advance to room {current_room._ForwardPaths[x]._Name} "); //decide room
+                                Console.ResetColor();
+                                System.Console.WriteLine();
                             }
-                            Console.WriteLine();
                             while (!int.TryParse (Console.ReadLine (), out room_selection)) {
                                 Console.WriteLine ("Please enter an above integer.");
+                                Console.WriteLine ("---------------------------------------------");
                             }
                             if(room_selection >= 0 && room_selection < current_room._ForwardPaths.Count ){
                                 current_room = current_room._ForwardPaths[room_selection];
@@ -111,7 +127,7 @@ namespace HauntedHouse {
         public static List<Hero> check_dead_heroes(List<Hero> Heroes) {
             
             for (int x = 0; x < Heroes.Count; x++) {
-                Console.WriteLine($"{Heroes[x]._Name} Has {Heroes[x].health} health left!");
+                // Console.WriteLine($"{Heroes[x]._Name} Has {Heroes[x].health} health left!");
                 if(Heroes[x].CheckDead() == true){
                     Console.WriteLine($"Our hero {Heroes[x]._Name} has fallen!"); 
                     Heroes.RemoveAt(x);
@@ -122,7 +138,9 @@ namespace HauntedHouse {
         public static List<Enemy> check_dead_enemies(List<Enemy> Enemies) {
             for (int x = 0; x < Enemies.Count; x++) {
                 if(Enemies[x].CheckDead() == true){
-                    Console.WriteLine($"A {Enemies[x]._Name} Has been slain!"); 
+                    Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    Console.WriteLine($"***A {Enemies[x]._Name} Has been slain!***"); 
+                    Console.ResetColor();
                     Enemies.RemoveAt(x);
                 }
             }
