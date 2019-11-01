@@ -38,6 +38,8 @@ namespace HauntedHouse.Models
                 target.health -= TotalDmg;
                 System.Console.WriteLine ($"{_Name} fired a flaming arrow for {TotalDmg} Damage. ");
             }
+            System.Threading.Thread.Sleep(5000);
+
         }
         // public override void Special(Enemy target){
 

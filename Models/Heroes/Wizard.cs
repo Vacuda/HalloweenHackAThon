@@ -40,6 +40,7 @@ namespace HauntedHouse.Models
                 target.health -= TotalDmg;
             System.Console.WriteLine ($"{_Name} surged forward a lightening bolt for {TotalDmg} Damage. ");
             }
+            System.Threading.Thread.Sleep(5000);
         }
         // public override void Special(Hero target){
             

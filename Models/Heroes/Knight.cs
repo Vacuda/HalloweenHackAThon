@@ -41,6 +41,7 @@ namespace HauntedHouse.Models
                 target.health -= TotalDmg;
             System.Console.WriteLine ($"{_Name} headbutted with an iron helmet for {TotalDmg} Damage. ");
             }
+            System.Threading.Thread.Sleep(5000);
         }
         // public override void Special(Enemy target){
 
