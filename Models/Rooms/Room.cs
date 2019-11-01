@@ -10,7 +10,7 @@ namespace HauntedHouse.Models
         public string _Code;
         public string _Description;
         public List<Enemy> _Enemies;
-        public List<string> _ForwardPaths;
+        public List<Room> _ForwardPaths;
 
         //Constructors
         public Room(string name, string code, string description){
@@ -18,7 +18,7 @@ namespace HauntedHouse.Models
             _Code = code;
             _Description = description;
             _Enemies = new List<Enemy>();
-            _ForwardPaths = new List<string>();
+            _ForwardPaths = new List<Room>();
 
         }
 

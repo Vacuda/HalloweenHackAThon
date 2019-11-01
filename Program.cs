@@ -5,114 +5,8 @@ using HauntedHouse.Models;
 namespace HauntedHouse {
     class Program {
         static void Main (string[] args) {
-
-            ////////
-
-            //A
-            Room creepy_foyer = new Room(
-                "Creepy Foyer",
-                "A",
-                "This place is gorgeous!  There's a lovely lamp over there.  AND SUDDENLY! a lizard walks into the CENTER OF THE ROOM!"
-                );
-                creepy_foyer._Enemies.Add(new Lizard());
-                creepy_foyer._ForwardPaths.Add("A");
-                creepy_foyer._ForwardPaths.Add("B");
-
-            //B
-            Room computer_Room = new Room(
-                "Computer Room",
-                "B",
-                "----"
-                );
-            computer_Room._Enemies.Add(new Unorganized());
-            computer_Room._ForwardPaths.Add("D");
-            computer_Room._ForwardPaths.Add("E");
-
-            //C
-            Room lovely_living_room = new Room(
-                "Lovely Living Room",
-                "C",
-                "It smells like burning diapers in here, but it looks cozy.  Maybe I can find some gold in here?  Just then, a very traditional ghost attacks you.  It is the source of the smell... "
-                );
-            creepy_foyer._Enemies.Add(new Ghost());
-            creepy_foyer._ForwardPaths.Add("E");
-            creepy_foyer._ForwardPaths.Add("F");
-
-            //D
-            Room banquet_hall = new Room(
-                "Banquet Hall",
-                "D",
-                "-----"
-                );
-            banquet_hall._Enemies.Add(new SmilingPolitician());
-            banquet_hall._ForwardPaths.Add("G");
-
-            //E
-            Room boiler_room = new Room(
-                "Boiler Room",
-                "E",
-                "----"
-                );
-            boiler_room._Enemies.Add(new Bat());
-            boiler_room._Enemies.Add(new Bat());
-            boiler_room._Enemies.Add(new Bat());
-            boiler_room._ForwardPaths.Add("H");
-            boiler_room._ForwardPaths.Add("G");
-
-            //F
-            Room garden_terrace = new Room(
-                "Garden Terrace",
-                "F",
-                "A beautiful terrace overlooking a lush garden. They have pumpkins! Oh my there's a Deadly, Venomous Scarecrow! (and a lizard)"
-                );
-            garden_terrace._Enemies.Add(new Scarecrow());
-            garden_terrace._Enemies.Add(new Lizard());
-            garden_terrace._ForwardPaths.Add("H");
-
-            //G
-            Room lab = new Room(
-                "Lab",
-                "G",
-                "-----"
-                );
-            lab._Enemies.Add(new BallofEnergy());
-            lab._ForwardPaths.Add("I");
-
-            //H
-            Room kids_room = new Room(
-                "Kid's Room",
-                "H",
-                "There's this pretty cool kids room.  It's actually very clean and colorful.  Except, there's a dead zombie Kreepy Kid named Zach staring at you.  He attacks!"
-                );
-            kids_room._Enemies.Add(new KreepyChild());
-            kids_room._ForwardPaths.Add("I");
-
-            //I
-            Room basement_dungeon = new Room(
-                "Basement Dungeon",
-                "I",
-                "----"
-                );
-            basement_dungeon._Enemies.Add(new DeadZombieAdrian());
-
-    // ///////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            // BuildRooms(); <-- UNCOMMENT THIS :D
+            List<Room> rooms = Program2.RoomBuilds();
+            Console.WriteLine($"Rooms: {rooms.Count}");
             Random rand = new Random ();
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine ("************WELCOME TO HAUNTED HOUSE************");
@@ -122,67 +16,82 @@ namespace HauntedHouse {
                 Console.WriteLine ($"-----------Hero {x} Selection!-----------");
                 Heroes.Add (ChooseHero ());
             }
-            //List<Enemy> Enemies = new List<Enemy> (); //enemies list declaration
-
 
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write ($"You, ");
-            // for(var x=0; x<Heroes.Count;x++){
-            // if Heroes[x] == 1{
-
-            // }
-            foreach (Hero hero in Heroes) {
-                Console.Write ($" {hero._Name} ");
+            for(var x=0; x<Heroes.Count;x++){
+                Console.Write ($" {Heroes[x]._Name}, ");
+                if (x == Heroes.Count-2){
+                    Console.Write(" and ");
+                }
             }
-            Console.WriteLine (", have been summoned to Dojo Manor by Count Brakula,\nwho is not a vampire, to exterminate the spooky entities that dwell inside.\nYou are supicious of Count Brakula, but accept the job anyway.\nPress Enter/Return to begin...");
+            Console.WriteLine (" have been summoned to Dojo Manor by Count Brakula,\nwho is not a vampire, to exterminate the spooky entities that dwell inside.\nYou are supicious of Count Brakula, but accept the job anyway.\nPress Enter/Return to begin...");
             Console.ResetColor ();
 
             ConsoleKey key = Console.ReadKey (true).Key;
             while (key != ConsoleKey.Enter) {
                 key = Console.ReadKey (true).Key;
             }
-            //Console.WriteLine("BEGIN YOUR ADVENTURE HERE!!!");
             bool room_advance = true;
             bool end = false;
             int room_selection;
-            Room current_room = creepy_foyer;
-            while (!end) {
+            Room current_room = rooms[rooms.Count - 1]; //first room
+            List<Room> possible_rooms = new List<Room>();
+            List<Enemy> Enemies = current_room._Enemies; //Populated for the first room only
+
+            while (!end) { //Main loop starts here
                 if (room_advance == true){
-                Console.WriteLine ($"You have entered {current_room._Name}");
-                Console.WriteLine($"{current_room._Description}");
+                    if(Enemies.Count >= 1){
+                        Console.WriteLine ($"You have entered {current_room._Name}");
+                        Console.WriteLine($"{current_room._Description}");
+                    }
                 room_advance = false;
                 ///CHANGE ROOMS HERE!!!!
                 }else{ //battle logic
-                    List<Enemy> Enemies = current_room._Enemies;
-
+                    
                     if (Enemies.Count > 0) { //are there enemies???
+                        Console.WriteLine("---------------------------------------------"); //begin battle turn
                         Console.WriteLine ($"There are {Enemies.Count} enemies in the room!");
-                    foreach (Hero hero in Heroes) { //attack loop
-                        hero.Attack (Enemies[rand.Next (0, Enemies.Count)]);
+                        foreach(Enemy enemy in Enemies){
+                            Console.WriteLine($"A {enemy._Name} with {enemy.health} Health!");
+                        }
+                        foreach (Hero hero in Heroes) { //attack loop
+                            hero.Attack (Enemies[rand.Next (0, Enemies.Count)]);
                         }
 
-                    foreach (Enemy enemy in Enemies) {
-                        enemy.Attack (Heroes[rand.Next (0, Heroes.Count)]);
+                        foreach (Enemy enemy in Enemies) {
+                            enemy.Attack (Heroes[rand.Next (0, Heroes.Count)]);
                         }
                         check_dead_enemies(Enemies);
                         check_dead_heroes(Heroes);
+                        Console.WriteLine("---------------------------------------------"); //end battle turn
                     } else { //you can advance!!
                         Console.WriteLine ($"There are no enemies in the room.");
+                        foreach(Hero hero in Heroes){
+                            Console.WriteLine($"{hero._Name} is left standing with {hero.health} health left");
+                        }
                         Console.WriteLine ("---------------------------------------------");
-                        for(var x =1; x<=5 ;x++){ ///COUNT OF ROOMS HERE PLEASE!!!!!!!!!!!!
-                            Console.Write ("Type {x} to advance to room {Placeholder} "); //decide room
+                        if(current_room == rooms[0]){ //check win condition. First room in list the last room in the game.
+                            Console.WriteLine($"---------Your Party Escaped with their lives!!!!!!!----------");
+                            Console.WriteLine ("The End!");
+                            end = true; //that's all folks.
+                        }else{ //continue game.
+                            for(var x =0; x< current_room._ForwardPaths.Count ;x++){ 
+                                Console.Write ($"Type {x+1} to advance to room {current_room._ForwardPaths[x]._Name} "); //decide room
+                            }
+                            Console.WriteLine();
+                            while (!int.TryParse (Console.ReadLine (), out room_selection)) {
+                                Console.WriteLine ("Please enter an above integer.");
+                            }
+                            if(room_selection >= 0 && room_selection < current_room._ForwardPaths.Count ){
+                                current_room = current_room._ForwardPaths[room_selection];
+                                Enemies = current_room._Enemies;
+                            }else{
+                                current_room = current_room._ForwardPaths[0];
+                                Enemies = current_room._Enemies;    
+                            }
+                            room_advance = true;
                         }
-                        Console.WriteLine();
-                        while (!int.TryParse (Console.ReadLine (), out room_selection)) {
-                            Console.WriteLine ("Please enter an above integer.");
-                        }
-                        if(room_selection >= 0 && room_selection < current_room._ForwardPaths.Count ){
-                            //current_room = current_room._ForwardPaths[room_selection];
-                        }else{
-                            //default room!    
-                        }
-
-                        room_advance = true;
                     }
 
                     // Heroes = new List<Hero> (); //TESTING!!!!!!!!!!!!
@@ -199,22 +108,21 @@ namespace HauntedHouse {
                 }
             }
         }
-        public static List<Hero> check_dead_heroes (List<Hero> Heroes) {
-            //foreach(Hero hero in Heroes){
-            //}
+        public static List<Hero> check_dead_heroes(List<Hero> Heroes) {
             
             for (int x = 0; x < Heroes.Count; x++) {
-                if(Heroes[x].CheckDead()){
-                    Console.WriteLine(Heroes[x]._Name); 
+                Console.WriteLine($"{Heroes[x]._Name} Has {Heroes[x].health} health left!");
+                if(Heroes[x].CheckDead() == true){
+                    Console.WriteLine($"Our hero {Heroes[x]._Name} has fallen!"); 
                     Heroes.RemoveAt(x);
                 }
             }
             return Heroes;
         }
-        public static List<Enemy> check_dead_enemies (List<Enemy> Enemies) {
+        public static List<Enemy> check_dead_enemies(List<Enemy> Enemies) {
             for (int x = 0; x < Enemies.Count; x++) {
-                if(Enemies[x].CheckDead()){
-                    Console.WriteLine(Enemies[x]._Name); 
+                if(Enemies[x].CheckDead() == true){
+                    Console.WriteLine($"A {Enemies[x]._Name} Has been slain!"); 
                     Enemies.RemoveAt(x);
                 }
             }
@@ -234,122 +142,19 @@ namespace HauntedHouse {
             Console.WriteLine ("What is your character's name?");
             string name = Console.ReadLine();
             if (choice == 1) {
-                //CREATE ATTACK HERO
                 Archer archer = new Archer (name);
                 return archer;
             }
             if (choice == 2) {
-                //CREATE ATTACK HERO
                 Knight knight = new Knight (name);
                 return knight;
             }
             if (choice == 3) {
-                //CREATE ATTACK HERO
                 Wizard wizard = new Wizard (name);
                 return wizard;
             } else {
                 return new Wizard ("Jeff");
             }
-
-
-
-
         }
-
-        static void BuildRooms(){
-
-    //A
-    Room creepy_foyer = new Room(
-        "Creepy Foyer",
-        "A",
-        "This place is gorgeous!  There's a lovely lamp over there.  AND SUDDENLY! a lizard walks into the CENTER OF THE ROOM!"
-        );
-        creepy_foyer._Enemies.Add(new Lizard());
-        creepy_foyer._ForwardPaths.Add("A");
-        creepy_foyer._ForwardPaths.Add("B");
-
-    //B
-    Room computer_Room = new Room(
-        "Computer Room",
-        "B",
-        "----"
-        );
-    computer_Room._Enemies.Add(new Unorganized());
-    computer_Room._ForwardPaths.Add("D");
-    computer_Room._ForwardPaths.Add("E");
-
-    //C
-    Room lovely_living_room = new Room(
-        "Lovely Living Room",
-        "C",
-        "It smells like burning diapers in here, but it looks cozy.  Maybe I can find some gold in here?  Just then, a very traditional ghost attacks you.  It is the source of the smell... "
-        );
-    creepy_foyer._Enemies.Add(new Ghost());
-    creepy_foyer._ForwardPaths.Add("E");
-    creepy_foyer._ForwardPaths.Add("F");
-
-    //D
-    Room banquet_hall = new Room(
-        "Banquet Hall",
-        "D",
-        "-----"
-        );
-    banquet_hall._Enemies.Add(new SmilingPolitician());
-    banquet_hall._ForwardPaths.Add("G");
-
-    //E
-    Room boiler_room = new Room(
-        "Boiler Room",
-        "E",
-        "----"
-        );
-    boiler_room._Enemies.Add(new Bat());
-    boiler_room._Enemies.Add(new Bat());
-    boiler_room._Enemies.Add(new Bat());
-    boiler_room._ForwardPaths.Add("H");
-    boiler_room._ForwardPaths.Add("G");
-
-    //F
-    Room garden_terrace = new Room(
-        "Garden Terrace",
-        "F",
-        "A beautiful terrace overlooking a lush garden. They have pumpkins! Oh my there's a Deadly, Venomous Scarecrow! (and a lizard)"
-        );
-    garden_terrace._Enemies.Add(new Scarecrow());
-    garden_terrace._Enemies.Add(new Lizard());
-    garden_terrace._ForwardPaths.Add("H");
-
-    //G
-    Room lab = new Room(
-        "Lab",
-        "G",
-        "-----"
-        );
-    lab._Enemies.Add(new BallofEnergy());
-    lab._ForwardPaths.Add("I");
-
-    //H
-    Room kids_room = new Room(
-        "Kid's Room",
-        "H",
-        "There's this pretty cool kids room.  It's actually very clean and colorful.  Except, there's a dead zombie Kreepy Kid named Zach staring at you.  He attacks!"
-        );
-    kids_room._Enemies.Add(new KreepyChild());
-    kids_room._ForwardPaths.Add("I");
-
-    //I
-    Room basement_dungeon = new Room(
-        "Basement Dungeon",
-        "I",
-        "----"
-        );
-    basement_dungeon._Enemies.Add(new DeadZombieAdrian());
-
-
-
-
-
-}
-
     }
 }

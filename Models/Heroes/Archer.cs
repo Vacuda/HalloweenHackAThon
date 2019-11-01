@@ -5,9 +5,6 @@ namespace HauntedHouse.Models
 {
     public class Archer : Hero
     {
-        //Fields
-
-        //Constructor
         public Archer(string name) : base (name){
             //12
             _Attack = 10;
@@ -31,15 +28,15 @@ namespace HauntedHouse.Models
             int TotalDmg = _Attack + AttkMethodNum;
             if (AttkMethodNum < 3) {
                 target.health -= TotalDmg;
-            System.Console.WriteLine ($"{_Name} Ate You Hand For {TotalDmg} Damage. ");
+                System.Console.WriteLine ($"{_Name} fired an arrow for {TotalDmg} Damage. ");
             }
             if (AttkMethodNum == 3) {
                 target.health -= TotalDmg;
-            System.Console.WriteLine ($"{_Name} Ate You Hand For {TotalDmg} Damage. ");
+                System.Console.WriteLine ($"{_Name} clipped the target with a bow for {TotalDmg} Damage. ");
             }
             if (AttkMethodNum > 3) {
                 target.health -= TotalDmg;
-            System.Console.WriteLine ($"{_Name} Ate You Hand For {TotalDmg} Damage. ");
+                System.Console.WriteLine ($"{_Name} fired a flaming arrow for {TotalDmg} Damage. ");
             }
         }
         // public override void Special(Enemy target){

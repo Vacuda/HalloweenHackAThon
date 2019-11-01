@@ -31,15 +31,15 @@ namespace HauntedHouse.Models
             int TotalDmg = _Attack + AttkMethodNum;
             if (AttkMethodNum < 3) {
                 target.health -= TotalDmg;
-            System.Console.WriteLine ($"{_Name} Ate You Hand For {TotalDmg} Damage. ");
+            System.Console.WriteLine ($"{_Name} shashed with a sword for {TotalDmg} Damage. ");
             }
             if (AttkMethodNum == 3) {
                 target.health -= TotalDmg;
-            System.Console.WriteLine ($"{_Name} Ate You Hand For {TotalDmg} Damage. ");
+            System.Console.WriteLine ($"{_Name} jabbed with sword hilt for {TotalDmg} Damage. ");
             }
             if (AttkMethodNum > 3) {
                 target.health -= TotalDmg;
-            System.Console.WriteLine ($"{_Name} Ate You Hand For {TotalDmg} Damage. ");
+            System.Console.WriteLine ($"{_Name} headbutted with an iron helmet for {TotalDmg} Damage. ");
             }
         }
         // public override void Special(Enemy target){

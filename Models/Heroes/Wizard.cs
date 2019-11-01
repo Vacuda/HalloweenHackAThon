@@ -30,15 +30,15 @@ namespace HauntedHouse.Models
             int TotalDmg = _Attack + AttkMethodNum;
             if (AttkMethodNum < 3) {
                 target.health -= TotalDmg;
-            System.Console.WriteLine ($"{_Name} Ate You Hand For {TotalDmg} Damage. ");
+            System.Console.WriteLine ($"{_Name} launched a fireball for {TotalDmg} Damage. ");
             }
             if (AttkMethodNum == 3) {
                 target.health -= TotalDmg;
-            System.Console.WriteLine ($"{_Name} Ate You Hand For {TotalDmg} Damage. ");
+            System.Console.WriteLine ($"{_Name} peppered the target with electric sparks for {TotalDmg} Damage. ");
             }
             if (AttkMethodNum > 3) {
                 target.health -= TotalDmg;
-            System.Console.WriteLine ($"{_Name} Ate You Hand For {TotalDmg} Damage. ");
+            System.Console.WriteLine ($"{_Name} surged forward a lightening bolt for {TotalDmg} Damage. ");
             }
         }
         // public override void Special(Hero target){
